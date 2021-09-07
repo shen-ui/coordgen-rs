@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "coordgen/sketcherMinimizer.h"
+#include "../coordgenlibs/sketcherMinimizer.h"
 #include "get_coordinates.h"
 
 void get_coordinates(size_t n_atoms, uint8_t* atoms, size_t n_bonds, uint16_t* bonds, float* coords) {
