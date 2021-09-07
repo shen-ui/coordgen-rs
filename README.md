@@ -5,6 +5,10 @@ This exposes a pair of functions that interface with `libcoordgen` to generate 2
 for a molecule given its connectivity. The purpose of this crate is to simply generate the
 coordinates, it does not perform any drawing functionality on its own.
 
+Requires `CMake` version 3.2 or later, a `Boost` installation, a `c++` compiler supporting `c++11`.
+These requirements are inherited from the original project.
+This will not compile on windows.
+
 This crate is not endorsed or supported by the original authors of `coordgen`.
 
 ## Molecular Graphs
@@ -20,7 +24,7 @@ not allow for any configuration.
 ## Versioning
 | crate version | `coordgen` version |
 | --- | --- |
-| 0.1.0 | 2.0.3 |
+| `^0.1.0` | `2.0.3` |
 
 ## Example
 ```rust
