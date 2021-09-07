@@ -1,5 +1,4 @@
 # coordgen-rs
-A thin rust wrapper around [coordgenlibs](https://github.com/schrodinger/coordgenlibs).
 A thin wrapper around [coordgen](https://github.com/schrodinger/coordgenlibs).
 
 This exposes a pair of functions that interface with `libcoordgen` to generate 2D coordinates
@@ -8,17 +7,22 @@ coordinates, it does not perform any drawing functionality on its own.
 
 This crate is not endorsed or supported by the original authors of `coordgen`.
 
-# Molecular Graphs
+## Molecular Graphs
 Molecular graphs can be represented a few different ways. This crate adopts an opinionated
 definition where molecular graphs are undirected simple graphs with atomic numbers as node
 labels and bond multiplicities as edge labels.
 
-# Implementation
+## Implementation
 This implementation defines a simple wrapper function with a C-like interface that is
 essentially a modified version of the example in the `coordgen` repository. This wrapper does
 not allow for any configuration.
 
-# Example
+## Versioning
+| crate version | `coordgen` version |
+| --- | --- |
+| 0.1.0 | 2.0.3 |
+
+## Example
 ```rust
 // this corresponds to an equivalent to the example in
 // https://github.com/schrodinger/coordgenlibs/blob/master/example_dir/example.cpp
@@ -31,8 +35,3 @@ let bonds = vec![[0u16, 1, 1]];
 let coords = coordgen::gen_coords(&atoms, &bonds).unwrap();
 assert_eq!(coords, vec![(-50.0, 0.0), (0.0, 0.0)])
 ```
-
-# Versioning
-| crate version | `coordgen` version |
-| --- | --- |
-| 0.1.0 | 2.0.3 |
