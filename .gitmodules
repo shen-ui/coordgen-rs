@@ -1,0 +1,3 @@
+[submodule "coordgenlibs"]
+	path = coordgenlibs
+	url = https://github.com/schrodinger/coordgenlibs.git
