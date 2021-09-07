@@ -1,8 +1,10 @@
 #![warn(missing_docs)]
-
 #![doc = include_str!("../README.md")]
 
-use std::{collections::{HashMap, HashSet}, fmt};
+use std::{
+    collections::{HashMap, HashSet},
+    fmt,
+};
 
 /// A pre-condition violation that may cause undefined behavior when generating coordinates.
 ///
@@ -25,38 +27,55 @@ pub enum Error {
         /// The invalid bond multiplicity that was found
         provided: u16,
         /// The index of the invalid bond
-        bond_idx: usize
+        bond_idx: usize,
     },
     /// One of the atoms contained an atomic number for an atom that doesn't exist
     AtomicNum {
         /// The invalid atomic number that was found
         provided: u8,
         /// The index of the invalid atom
-        atom_idx: usize
+        atom_idx: usize,
     },
     /// The provided bonds contained a parallel bond
     ParallelBonds {
         /// The first parallel bond found
         bond1: usize,
         /// The second parallel bond found
-        bond2: usize
+        bond2: usize,
     },
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::AtomIdx { provided, bond_idx, atom, max } => {
+            Self::AtomIdx {
+                provided,
+                bond_idx,
+                atom,
+                max,
+            } => {
                 write!(f, "bond {} contained atomic index {} for coincident atom {}, but only {} atoms exist", bond_idx, provided, atom, max)
-            },
+            }
             Self::BondMult { provided, bond_idx } => {
-                write!(f, "bond {} contained multiplicity {}, but it must be 1, 2, or 3", bond_idx, provided)
-            },
+                write!(
+                    f,
+                    "bond {} contained multiplicity {}, but it must be 1, 2, or 3",
+                    bond_idx, provided
+                )
+            }
             Self::AtomicNum { provided, atom_idx } => {
-                write!(f, "atom {} had an atomic number {}, no such atom currently exists", atom_idx, provided)
-            },
+                write!(
+                    f,
+                    "atom {} had an atomic number {}, no such atom currently exists",
+                    atom_idx, provided
+                )
+            }
             Self::ParallelBonds { bond1, bond2 } => {
-                write!(f, "bond {} and bond {} connect the same two atoms", bond1, bond2)
+                write!(
+                    f,
+                    "bond {} and bond {} connect the same two atoms",
+                    bond1, bond2
+                )
             }
         }
     }
@@ -142,7 +161,7 @@ pub unsafe fn gen_coords_unchecked(atoms: &[u8], bonds: &[[u16; 3]]) -> Vec<(f32
     // FIXME: use a pointer case on a repr(C) type to avoid double allocations
     let mut coords = Vec::with_capacity(n_atoms);
     for idx in 0..n_atoms {
-        let coord = (raw_coords[2*idx], raw_coords[2*idx + 1]);
+        let coord = (raw_coords[2 * idx], raw_coords[2 * idx + 1]);
         coords.push(coord);
     }
 
@@ -215,7 +234,7 @@ pub fn gen_coords(atoms: &[u8], bonds: &[[u16; 3]]) -> Result<Vec<(f32, f32)>, E
 mod tests {
     use std::time::Duration;
 
-    use super::{get_coordinates, gen_coords_unchecked};
+    use super::{gen_coords_unchecked, get_coordinates};
     use serde::Deserialize;
 
     #[derive(Deserialize)]
@@ -261,9 +280,10 @@ mod tests {
     }
 
     fn pubchem_consistency(cid: usize) {
-        let compound = reqwest::blocking::get(
-            format!("http://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{}/JSON", cid),
-        )
+        let compound = reqwest::blocking::get(format!(
+            "http://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{}/JSON",
+            cid
+        ))
         .unwrap()
         .json::<PubchemResponse>()
         .unwrap();
@@ -278,7 +298,7 @@ mod tests {
             .collect::<Vec<[u16; 3]>>();
         let mut c_coords: Vec<f32> = Vec::with_capacity(2 * atoms.len());
         let flat_bonds = bonds.clone().into_iter().flatten().collect::<Vec<u16>>();
-        let rust_coords = unsafe  { gen_coords_unchecked(&atoms, &bonds) };
+        let rust_coords = unsafe { gen_coords_unchecked(&atoms, &bonds) };
         unsafe {
             get_coordinates(
                 atoms.len(),
@@ -287,12 +307,12 @@ mod tests {
                 flat_bonds.as_ptr(),
                 c_coords.as_mut_ptr(),
             );
-            c_coords.set_len(2*atoms.len());
+            c_coords.set_len(2 * atoms.len());
         }
 
         for idx in 0..atoms.len() {
-            assert_eq!(c_coords[2*idx], rust_coords[idx].0);
-            assert_eq!(c_coords[2*idx +1], rust_coords[idx].1);
+            assert_eq!(c_coords[2 * idx], rust_coords[idx].0);
+            assert_eq!(c_coords[2 * idx + 1], rust_coords[idx].1);
         }
 
         // don't get blocked by pubchem
