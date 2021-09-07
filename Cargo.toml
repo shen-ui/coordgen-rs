@@ -2,6 +2,13 @@
 name = "coordgen"
 version = "0.1.0"
 edition = "2018"
+description = "A thin rust wrapper around coordgen"
+homepage = "https://github.com/mustafa-guler/coordgen-rs"
+repository = "https://github.com/mustafa-guler/coordgen-rs"
+readme = "README.md"
+categories = ["science", "api-bindings"]
+keywords = ["molecule", "visualization", "coordinate", "generation"]
+license = "MIT"
 
 [build-dependencies]
 cc = "1.0.70"
