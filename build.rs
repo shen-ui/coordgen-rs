@@ -1,9 +1,5 @@
 use cmake::Config;
 
-fn out_dir(){
-    
-}
-
 fn main() {
     // check OS and select cpp compiler
     #[cfg(not(target_family = "unix"))]
